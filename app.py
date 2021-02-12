@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 
-def predict():
+def get():
     return jsonify({"success": True, "message": "yo"}), 200
 
 port = int(os.environ.get('PORT', 8080))
