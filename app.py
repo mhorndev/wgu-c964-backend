@@ -1,12 +1,27 @@
-import os
 from flask import Flask, request, jsonify
+import os
+import pandas
+import pickle
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET'])
+model = pickle.load(open('model.pkl','rb'))
 
-def get():
-    return jsonify({"success": True, "message": "yo"}), 200
+@app.route('/', methods=['POST'])
+
+def post():
+  # read request body
+    data = request.get_json(force=True)
+
+    # convert request body into a dataframe
+    data.update((x, [y]) for x, y in data.items())
+    dataframe = pandas.DataFrame.from_dict(data)
+
+    # predictions
+    prediction = model.predict(dataframe)
+    
+    # return data
+    return jsonify(cost=int(prediction[0]))
 
 port = int(os.environ.get('PORT', 8080))
 
